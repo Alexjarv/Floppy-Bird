@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Floppy Bird</title>
+    <meta name="description" content="Floppy Bird">
+    <link rel="stylesheet" href="css/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="images/bird.png" />
+</head>
+
+<body>
+    <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <div class="container" id="main">
+        <span class="title unselectable" id="title">Floppy Bird</span>
+        <span class="score unselectable" id="score">0</span>
+        <div class="results" id="results">
+            <div class="scoreboard unselectable">
+                <div class="flex col">
+                    <span style="font-size: 7vh;">
+                        SCORE
+                    </span>
+                    <span class="white" id="scoreResult">
+                        0
+                    </span>
+                </div>
+                <div class="flex col">
+                    <span style="font-size: 7vh;">
+                        BEST
+                    </span>
+                    <span class="white" id="bestResult">
+                        0
+                    </span>
+                </div>
+            </div>
+            <button class="btn" id="restart">
+                RESTART
+            </button>
+            <button class="btn" id="share">
+                SHARE
+            </button>
+        </div>
+        <div class="bird waiting" id="bird"></div>
+        <div class="pipe top"></div>
+        <div class="pipe bottom"></div>
+        <div class="footer" id="footer"></div>
+    </div>
+
+    <script src="js/game.js" async defer></script>
+</body>
+
+</html>

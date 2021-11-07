@@ -1,0 +1,190 @@
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    font-family: FlappyBird;
+    font-size: 4rem;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    height: 100%;
+    display: block;
+    background-color: #70C5CE;
+    overflow: hidden;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    background-image: url("../images/background.png");
+    background-position: bottom;
+    background-size: 100% 100%;
+    background-repeat: repeat-x;
+}
+
+.footer {
+    width: 100%;
+    height: 110px;
+    position: fixed;
+    bottom: 0;
+    background: url("../images/bottom2.png");
+    background-repeat: repeat-x;
+    background-size: 100% 100%;
+    z-index: 1;
+}
+
+.title {
+    display: inline-block;
+    padding: 70px;
+    text-shadow: rgb(253, 253, 253) 1px 1px 3px;
+}
+
+.score {
+    padding: 70px;
+    font-family: FlappyBirdRegular;
+    color: #fff;
+    text-shadow: grey -4px 4px;
+    display: none;
+    z-index: 2;
+}
+
+.bird {
+    width: 10vh;
+    height: 6.7vh;
+    display: block;
+    background: url(../images/bird.gif);
+    background-size: 100% 100%;
+    position: absolute;
+    left: 47%;
+    right: 50%;
+    top: 50%;
+    bottom: 50%;
+    transition: transform linear 0.2s, rotate linear 0.1s;
+}
+
+.waiting {
+    animation: MoveUpDown 0.9s ease-in-out infinite;
+}
+
+@keyframes MoveUpDown {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.pipe {
+    position: absolute;
+    background: url(../images/pipe.png);
+    background-size: 100% 110%;
+    background-repeat: no-repeat;
+    background-position-y: -0.9vmax;
+    z-index: 0;
+    height: 30vh;
+    width: 13.5vh;
+    right: -70px;
+}
+
+.results {
+    display: none;
+    z-index: 3;
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+}
+
+.scoreboard {
+    background-color: #DED895;
+    width: fit-content;
+    padding: 20px 20px 15px 20px;
+    display: block;
+    margin: 25px auto;
+    border-radius: 15px;
+    border-style: ridge;
+    border-color: rgb(141, 114, 92);
+    color: darkorange;
+    text-shadow: white 1px 1px 1px;
+    font-family: FlappyBirdRegular;
+    font-size: 8vh;
+    box-shadow: antiquewhite inset 2px 2px 2px;
+}
+
+.white {
+    color: #fff;
+    text-shadow: -4px 0 black, 0 4px black, 4px 0 black, 0 -4px black;
+}
+
+.flex {
+    display: flex;
+}
+
+.col {
+    flex-direction: column;
+}
+
+.top {
+    top: -40px;
+    transform: rotateZ(180deg);
+}
+
+.btn {
+    font-family: FlappyBirdRegular;
+    background-color: #E86101;
+    color: #fff;
+    border-color: #fff;
+    border-style: solid;
+    border-width: 4px;
+    box-shadow: #573303 0px 2px 1px, -5px 7px 1px #573303, 5px 7px 1px #573303, -5px -3px 1px #573303, 5px -3px 1px #573303;
+    font-size: 6vh;
+    padding: 5px;
+    min-width: 170px;
+    text-shadow: #612c06 1px 1px 3px;
+    transition: all 30ms linear;
+}
+
+.btn:hover {
+    background: #ec7017;
+    border-color: rgb(243, 234, 229);
+    text-decoration: none;
+}
+
+.btn:active {
+    background: #d35901;
+    color: rgb(243, 234, 229);
+    transform: translateY(3px);
+}
+
+.bottom {
+    bottom: 70px;
+}
+
+@font-face {
+    font-family: FlappyBird;
+    src: url("../fonts/FlappyBirdy.ttf");
+}
+
+@font-face {
+    font-family: FlappyBirdRegular;
+    src: url("../fonts/FlappyBirdRegular.ttf");
+}
