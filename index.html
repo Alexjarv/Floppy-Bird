@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/main.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="images/bird.png" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -20,6 +21,9 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
     <div class="container" id="main">
+        <div class="controls">
+            <i class="fas fa-volume-off" id="volume"></i>
+        </div>
         <span class="title unselectable" id="title">Floppy Bird</span>
         <span class="score unselectable" id="score">0</span>
         <div class="results" id="results">
@@ -44,9 +48,11 @@
             <button class="btn" id="restart">
                 RESTART
             </button>
-            <button class="btn" id="share">
-                SHARE
-            </button>
+            <a target="_blank" href="https://github.com/alexjarv">
+                <button class="btn" id="share">
+                    SHARE
+                </button>
+            </a>
         </div>
         <div class="bird waiting" id="bird"></div>
         <div class="pipe top"></div>

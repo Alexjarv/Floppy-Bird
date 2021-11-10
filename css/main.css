@@ -55,6 +55,24 @@ body {
     z-index: 2;
 }
 
+.controls {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 20px;
+    color: #38696c;
+    text-shadow: white 1px 1px 1px;
+    font-family: FlappyBirdRegular;
+    font-size: 7vh;
+    z-index: 3;
+}
+
+#volume {
+    min-width: 50px;
+}
+
 .bird {
     width: 10vh;
     height: 6.7vh;
@@ -66,6 +84,17 @@ body {
     right: 50%;
     top: 50%;
     bottom: 50%;
+    transition: transform linear 0.2s, rotate linear 0.1s;
+}
+
+.coin {
+    width: 7vh;
+    height: 7vh;
+    display: block;
+    background: url(../images/coin.gif);
+    background-size: 100% 100%;
+    position: absolute;
+    right: -70px;
     transition: transform linear 0.2s, rotate linear 0.1s;
 }
 

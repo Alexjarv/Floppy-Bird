@@ -8,6 +8,7 @@ const birdFlyImage = "url(../images/bird.gif)";
 //panels
 const scorePanel = document.getElementById('score');
 const titlePanel = document.getElementById('title');
+const volume = document.getElementById('volume');
 
 //results
 const resultsPanel = document.getElementById('results');
@@ -17,6 +18,8 @@ const bestResult = document.getElementById('bestResult');
 //buttons
 const restart = document.getElementById('restart');
 const share = document.getElementById('share');
+
+const buttons = document.getElementsByClassName('btn');
 
 const gravity = 0.98;
 
@@ -31,6 +34,51 @@ let isWaiting = true;
 let isJumping = false;
 let movingUnderPipe = false;
 
+var footerVerticalMatch = false;
+var footerHorizontalMatch = false;
+var pipeVerticalMatch = false;
+var pipeHorizontalMatch = false;
+var coinVerticalMatch = false;
+var coinHorizontalMatch = false;
+
+var backtrack = new Audio('../music/soundtrack3.mp3');
+backtrack.loop = true;
+backtrack.volume = 0;
+backtrack.play();
+
+var isVolumeOn = false;
+
+Array.from(buttons).forEach((button) => {
+    button.addEventListener('mouseover', function(e) {
+        var soundEffect = new Audio('../sounds/button.wav');
+        soundEffect.volume = 0.1;
+        soundEffect.play();
+    });
+    button.addEventListener('click', function(e) {
+        var soundEffect = new Audio('../sounds/button_click.wav');
+        soundEffect.volume = 0.1;
+        soundEffect.play();
+    });
+});
+
+volume.addEventListener('click', function(e) {
+
+    e.stopPropagation();
+
+    var $this = volume;
+
+    if ($this.classList.contains('fa-volume-up')) {
+        $this.classList.remove('fa-volume-up');
+        $this.classList.add('fa-volume-off');
+        backtrack.volume = 0;
+        isVolumeOn = false;
+    } else {
+        $this.classList.remove('fa-volume-off');
+        $this.classList.add('fa-volume-up');
+        backtrack.volume = 0.2;
+        isVolumeOn = true;
+    }
+});
 
 canv.addEventListener('click', function(e) {
 
@@ -43,7 +91,9 @@ canv.addEventListener('click', function(e) {
         if (!gameOver) {
             isWaiting = false;
             bird.classList.remove('waiting');
-            jump();
+            if (inViewport(bird)) {
+                jump();
+            }
         }
     }
 
@@ -54,9 +104,13 @@ restart.addEventListener('click', function(e) {
     e.stopPropagation();
     gameOver = false;
     clearPipes();
+    clearCoins();
     init();
     isWaiting = true;
     bird.classList.add('waiting');
+    if (isVolumeOn) {
+        backtrack.volume = 0.2;
+    }
     StartedGame = setInterval(update, 10);
 });
 
@@ -80,36 +134,62 @@ function init() {
 
 function update() {
 
-    timer++;
+    if (!gameOver) {
 
-    if (!isWaiting) {
-        if (timer % 120 === 0) {
-            spawnPipe();
+        timer++;
+
+        let pipes = document.getElementsByClassName("pipe");
+
+        let coins = document.getElementsByClassName("coin");
+
+        if (!isWaiting) {
+            if (timer % 120 === 0) {
+                spawnPipe();
+            }
+
+            if (timer % 290 === 0) {
+                spawnCoin();
+            }
+
+            if (timer % 20 === 0) {
+                Array.from(pipes).forEach((pipe) => {
+                    if (!isInViewport(pipe)) {
+                        pipe.remove();
+                    }
+                });
+                Array.from(coins).forEach((coin) => {
+                    if (!isInViewport(coin)) {
+                        coin.remove();
+                    }
+                });
+            }
         }
-    }
 
-    if (isFalling) {
-        bird.style.bottom = (bird.getBoundingClientRect().bottom) - gravity * 4 + "px";
-        bird.style.top = (bird.getBoundingClientRect().top) + gravity * 4 + "px";
-    } else if (isJumping) {
-        bird.style.bottom = (bird.getBoundingClientRect().bottom) + gravity * 0.5 + "px";
-        bird.style.top = (bird.getBoundingClientRect().top) - gravity * 0.5 + "px";
-    }
-
-    let pipes = document.getElementsByClassName("pipe");
-
-    Array.from(pipes).forEach((pipe) => {
-        pipe.style.left = (pipe.getBoundingClientRect().right - 76) + "px";
-        if (!isInViewport(pipe)) {
-            pipe.remove();
+        if (!inViewport(bird)) {
+            bird.style.bottom = (bird.getBoundingClientRect().bottom) - gravity * 15 + "px";
+            bird.style.top = (bird.getBoundingClientRect().top) + gravity * 15 + "px";
         }
-    });
+        if (isFalling) {
+            bird.style.bottom = (bird.getBoundingClientRect().bottom) - gravity * 4 + "px";
+            bird.style.top = (bird.getBoundingClientRect().top) + gravity * 4 + "px";
+        } else if (isJumping) {
+            bird.style.bottom = (bird.getBoundingClientRect().bottom) + gravity * 0.5 + "px";
+            bird.style.top = (bird.getBoundingClientRect().top) - gravity * 0.5 + "px";
+        }
 
-    if (collided()) {
-        console.log('collided');
-        stopGame();
+        Array.from(pipes).forEach((pipe) => {
+            pipe.style.left = (pipe.getBoundingClientRect().right - 82) + "px";
+        });
+
+        Array.from(coins).forEach((coin) => {
+            coin.style.left = (coin.getBoundingClientRect().right - 45.5) + "px";
+        });
+
+        if (collided(pipes, coins)) {
+            stopGame();
+        }
+
     }
-
     return;
 }
 
@@ -132,11 +212,13 @@ function stopGame() {
 
     resultsPanel.style.display = "block";
     footer.style = null;
+    if (isVolumeOn) {
+        backtrack.volume = 0.05;
+    }
     return;
 }
 
 function jump() {
-    console.log('jump');
     isFalling = false;
     isJumping = true;
     bird.style.transition = "transform linear 0.1s, rotate linear 0.1s";
@@ -147,7 +229,7 @@ function jump() {
         bird.style.transform = "rotateZ(0deg)";
         isJumping = false;
         isFalling = true;
-    }, 90);
+    }, 85);
     return;
 }
 
@@ -169,6 +251,24 @@ function spawnPipe() {
     canv.appendChild(newTopPipe);
 }
 
+function spawnCoin() {
+
+    var randomPosition = Math.floor(Math.random() * (520 - 10 + 1)) + 10;
+
+    var newCoin = document.createElement("div");
+    newCoin.classList.add('coin');
+    newCoin.style.top = randomPosition + 'px';
+    canv.appendChild(newCoin);
+}
+
+function clearCoins() {
+    let coins = document.getElementsByClassName("coin");
+
+    Array.from(coins).forEach((coin) => {
+        coin.remove();
+    });
+}
+
 function clearPipes() {
 
     let pipes = document.getElementsByClassName("pipe");
@@ -178,24 +278,28 @@ function clearPipes() {
     });
 }
 
-function collided() {
+function collided(pipes, coins) {
+
     let f = footer.getBoundingClientRect();
     let b = bird.getBoundingClientRect();
-    let pipes = document.getElementsByClassName("pipe");
 
-    var footerVerticalMatch;
-    var footerHorizontalMatch;
-    var pipeVerticalMatch = false;
-    var pipeHorizontalMatch = false;
+    footerVerticalMatch = false;
+    footerHorizontalMatch = false;
+    pipeVerticalMatch = false;
+    pipeHorizontalMatch = false;
+    coinVerticalMatch = false;
+    coinHorizontalMatch = false;
 
     Array.from(pipes).forEach((pipe) => {
 
         var p = pipe.getBoundingClientRect();
 
+        //y
         if ((b.top > p.top && b.top < p.bottom) || (b.bottom > p.top && b.bottom < p.bottom)) {
             pipeVerticalMatch = true;
         }
 
+        //x
         if ((b.right > p.left && b.right < p.right) || (b.left < p.right && b.left > p.left)) {
 
             pipeHorizontalMatch = true;
@@ -204,7 +308,6 @@ function collided() {
                 score++;
                 scorePanel.innerHTML = score;
             }
-            console.log('match1');
             movingUnderPipe = true;
 
         } else {
@@ -212,12 +315,42 @@ function collided() {
         }
     });
 
+    Array.from(coins).forEach((coin) => {
+
+        var c = coin.getBoundingClientRect();
+
+        //y
+        if ((b.top > c.top && b.top < c.bottom) || (b.bottom > c.top && b.bottom < c.bottom)) {
+            coinVerticalMatch = true;
+        }
+
+        //x
+        if ((b.right > c.left && b.right < c.right) || (b.left < c.right && b.left > c.left)) {
+            coinHorizontalMatch = true;
+        }
+
+        if (coinVerticalMatch && coinHorizontalMatch) {
+            console.log('Got the coin :)');
+            score++;
+            scorePanel.innerHTML = score;
+            var audio = new Audio('../sounds/coin.wav');
+            audio.volume = 0.3;
+            audio.play();
+            coin.remove();
+        }
+
+    });
+
+
+
+    //y
     if ((b.top > f.top && b.top < f.bottom) || (b.bottom > f.top && b.bottom < f.bottom)) {
         footerVerticalMatch = true;
     } else {
         footerVerticalMatch = false;
     }
 
+    //x
     if ((b.right > f.left && b.right < f.right) || (b.left < f.right && b.left > f.left)) {
         footerHorizontalMatch = true;
     } else {
@@ -231,6 +364,24 @@ function collided() {
     }
 }
 
+//partly visible on the screen
+function inViewport(el) {
+
+    var r, html;
+    if (!el || 1 !== el.nodeType) { return false; }
+    html = document.documentElement;
+    r = el.getBoundingClientRect();
+
+    return (!!r &&
+        r.bottom >= 0 &&
+        r.right >= 0 &&
+        r.top <= html.clientHeight &&
+        r.left <= html.clientWidth
+    );
+
+}
+
+//fully visible on the screen
 function isInViewport(element) {
     var top = element.offsetTop;
     var left = element.offsetLeft;
